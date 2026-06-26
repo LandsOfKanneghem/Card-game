@@ -1,0 +1,53 @@
+@use 'mixins';
+
+//для выбора сложности (ВРЕМЕННО)
+.set-difficulty {
+    @include mixins.flexObj(flex, center, center, column);
+    margin: 15px auto;
+    background-color: white;
+}
+
+.set-difficulty--button {
+    @include mixins.flexObj(flex, center, center, initial);
+    color: rgb(244, 224, 124);
+    text-shadow: 1px 1px 1px black;
+    border-color: transparent !important;
+    font-size: 12px;
+    width: 200px;
+    height: 40px;
+    margin-bottom: 15px;
+    border: 10px solid;
+    border-image-width: 10px;
+    border-image-slice: 10 14 10 14;
+    border-image-outset: 5px;
+    border-image-repeat: stretch;
+    cursor: pointer;
+    user-select: none;
+    &:hover {
+        color: white;
+    }
+}
+
+@mixin chooseDifficultyButton($background, $img) {
+	background: $background;
+	border-image-source: $img;
+    background-origin: border-box;
+}
+
+$emeraldGradient:   linear-gradient(to right bottom, rgb(6, 129, 39), rgb(21, 216, 96), rgb(6, 129, 39));
+$rubyGradient:      linear-gradient(to right bottom, rgb(157, 3, 3), rgb(237, 48, 48), rgb(157, 3, 3));
+$saphireGradient:   linear-gradient(to right bottom, rgb(0, 86, 171), rgb(82, 136, 244), rgb(0, 86, 171));
+$topazGradient:     linear-gradient(to right bottom, rgb(101, 14, 138), rgb(194, 64, 250), rgb(101, 14, 138));
+$greyGradient:      linear-gradient(to right bottom, rgb(35, 34, 34), rgb(110, 110, 110), rgb(35, 34, 34));
+
+$emeraldBorder:     url("../assets/img/border-image/green-50-200.png");
+$rubyBorder:        url("../assets/img/border-image/red-50-200.png");
+$saphireBorder:     url("../assets/img/border-image/blue-50-200.png");
+$topazBorder:       url("../assets/img/border-image/purple-50-200.png");
+$greyBorder:        url("../assets/img/border-image/black-50-200.png");
+
+.emerald-button     {@include chooseDifficultyButton($emeraldGradient, $emeraldBorder);}
+.ruby-button        {@include chooseDifficultyButton($rubyGradient, $rubyBorder);}
+.saphire-button     {@include chooseDifficultyButton($saphireGradient, $saphireBorder);}
+.topaz-button       {@include chooseDifficultyButton($topazGradient, $topazBorder);}
+.death-button       {@include chooseDifficultyButton($greyGradient, $greyBorder);}

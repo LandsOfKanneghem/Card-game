@@ -1,0 +1,72 @@
+@use '../mixins';
+@use '../vars';
+
+
+
+.done-actions-bar {
+    @include mixins.flexObj(flex, center, end, column-reverse);
+    width: 100px;
+    height: 100%;
+    border-left: 2px red solid;
+    border-right: 2px red solid;
+    gap: vars.$action-gap;
+}
+.player-actions, .AI-actions {margin: 0px 10px;}
+
+.action {
+    @include mixins.flexObj(flex, center, center, initial);
+    position: relative;
+    width: 100%;
+    height: vars.$action-height;
+    min-height: vars.$action-height;
+    border: 2px black solid;
+    //border-width: 2px 2px;
+    //border-radius: 0px;
+    cursor: pointer;
+    user-select: none;
+
+    &:hover {
+        border-color: white;//rgb(3, 102, 201)
+    }
+
+    &.black-action   {background: black;}
+    &.green-action   {background: rgb(28, 196, 42);}
+    &.red-action     {background: rgb(216, 17, 17);}
+    &.blue-action    {background: rgb(20, 40, 225);}
+    &.purple-action  {background: rgb(147, 16, 164);}
+}
+
+
+.action-value {
+    @include mixins.flexObj(flex, center, center, initial);
+    width: 30px;
+    height: 25px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10px;
+    font-weight: bold;
+    color: white;
+    background-color: black;
+    margin: auto;
+    border-radius: 5px;
+}
+
+.action-img {
+    width: 14px;
+    height: 14px;
+}
+
+//ПЕРЕЧЕРКИВАНИЕ (для отмененного действия)
+.canceled-action {
+
+    &::after, &::before {
+        position: absolute;
+        content: '';
+        top: 42%;
+        width: 50%;
+        height: 4px;
+        background-color: white;
+        border: 1px black solid;
+    }
+    &::after { transform: rotate(-20deg); }
+    &::before { transform: rotate(20deg); }
+}

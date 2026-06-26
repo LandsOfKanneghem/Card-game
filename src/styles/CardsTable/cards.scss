@@ -1,0 +1,80 @@
+@use '../mixins';
+@use '../vars';
+
+
+
+
+.player-cards {margin-left: 10px;}
+.AI-cards {margin-right: 10px;}
+
+.card, .null-card {
+    @include mixins.flexObj(inline-flex, center, center, initial);  
+    width: vars.$card-width;
+    height: vars.$card-height;
+    //border: 4px rgb(0, 38, 104) solid;
+    //border: 4px rgb(201, 201, 7) solid;
+    //border-image: linear-gradient(135deg, #fff700,#a5b000,#fff700) 1;     
+    border: 6px transparent solid;
+    border-image: url('../../assets/img/card-border/brd2.png') 10 stretch;
+                     
+           
+    //border-radius: 5px;//12px
+    cursor: pointer;
+    user-select: none;
+}
+.card:hover {
+    //border-image: linear-gradient(135deg, aqua,blue,aqua) 1;
+    border-image: url('../../assets/img/card-border/brd2-hover.png') 10 stretch;
+}
+
+.null-card {
+    // background: linear-gradient(to bottom, rgb(167, 178, 167), white, rgb(167, 178, 167));
+    // border-color: rgb(74, 74, 74);
+
+    background: rgb(3, 0, 87);
+    border: rgb(10, 6, 112) outset;
+
+    cursor: auto;
+}
+.not-clickable {pointer-events: none;}
+
+.card-value {
+    @include mixins.flexObj(flex, center, center, initial);
+    position: relative;
+    width: 70px;
+    height: 30px;
+    margin: auto;
+    border: 2px gold solid;
+    border-radius: 5px;
+    //color: yellow;//gold / yellow
+    background-color: rgb(20, 20, 60);//black
+    font-family: Arial, Helvetica, sans-serif;
+    //font-family: 'Cairopixel';//Cairopixel / GNF / Samson
+    font-size: 18px;//14
+    //font-weight: bold;
+
+    &.positive { color: rgb(47, 255, 54); }
+    &.negative { color: rgb(255, 50, 50); }
+    .arrow { 
+        position: absolute; 
+        right: 0px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 22px;
+    }
+}
+
+.spcard-img {
+    width: 20px;
+    height: 20px;
+}
+
+.hide {
+    display: none !important;
+}
+
+
+.green  {background: linear-gradient(135deg,rgba(34, 214, 49) 0%, rgb(0, 100, 42) 15%, rgba(0, 100, 42) 30%, rgba(34, 214, 49) 50%, rgba(0, 100, 42) 70%, rgba(0, 100, 42) 85%, rgba(34, 214, 49) 100%) !important;}
+.red    {background: linear-gradient(135deg,rgba(255, 20, 20) 0%, rgba(125, 0, 0) 15%, rgba(125, 0, 0) 30%, rgba(255, 20, 20) 50%, rgba(125, 0, 0) 70%, rgba(125, 0, 0) 85%, rgba(255, 20, 20) 100%) !important;}
+.blue   {background: linear-gradient(135deg,rgba(0, 25, 249) 0%, rgba(4, 0, 128) 15%, rgba(4, 0, 128) 30%, rgba(0, 25, 249) 50%, rgba(4, 0, 128) 70%, rgba(4, 0, 128) 85%, rgba(0, 25, 249) 100%) !important;}
+.purple {background: linear-gradient(135deg,rgba(154, 27, 171) 0%, rgba(89, 0, 101) 15%, rgba(89, 0, 101) 30%, rgba(154, 27, 171) 50%, rgba(89, 0, 101) 70%, rgba(89, 0, 101) 85%, rgba(154, 27, 171) 100%) !important;}

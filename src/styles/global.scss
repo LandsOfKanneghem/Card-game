@@ -1,0 +1,33 @@
+@font-face {
+    font-family: 'Pixelizer';
+    src: url(../assets/fonts/pixelizer/PixelizerBold.ttf);
+}
+
+@font-face {
+    font-family: 'Cairopixel';
+    src: url(../assets/fonts/Cairopixel/Cairopixel.ttf);
+}
+
+@font-face {
+    font-family: 'GNF';
+    src: url(../assets/fonts/GNF/GNF.ttf);
+}
+
+@font-face {
+    font-family: 'Samson';
+    src: url(../assets/fonts/Samson/Samson.ttf);
+}
+
+
+* {
+    font-family: 'GNF';
+    box-sizing: border-box;
+    user-select: none;
+    margin: 0;
+    padding: 0;
+    letter-spacing: 1px;//НЕ ДЛЯ ВСЕХ ШРИФТОВ
+}
+
+body {
+    overflow-y: hidden;
+}

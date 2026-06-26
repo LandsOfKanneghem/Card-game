@@ -1,0 +1,13 @@
+$main-background: rgb(244, 221, 139);
+$main-color: rgb(104, 57, 13);
+
+
+$card-width: 90px;
+$card-height: 130px;
+$card-gap: 5px;
+
+$action-height: 34px;
+$action-gap: 2px;
+
+$table-padding: 5px;
+$table-height: 12 * $action-height + 11 * $action-gap + 2 * $table-padding;//420px

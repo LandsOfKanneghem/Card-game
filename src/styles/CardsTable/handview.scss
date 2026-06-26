@@ -1,0 +1,35 @@
+@use '../mixins';
+@use '../vars';
+
+
+$borderSize: 0px;
+
+
+.all-cards-view {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    //padding: 5px 0;
+
+    .hand-view {
+        @include mixins.flexObj(flex, end, initial, row);
+        flex-wrap: wrap;
+        //border: $borderSize red solid;
+
+        &.common-hand, &.special-hand {
+            display: flex;
+            flex-wrap: wrap;
+            gap: vars.$card-gap;
+        }
+        &.common-hand { 
+            width: 3 * vars.$card-width + 2 * vars.$card-gap + 2 * $borderSize; 
+            height: 2 * vars.$card-height + vars.$card-gap + 2 * $borderSize; 
+        }
+        &.special-hand { 
+            width: 3 * vars.$card-width + 2 * vars.$card-gap + 2 * $borderSize; 
+            height: vars.$card-height + 2 * $borderSize; 
+        }
+    }
+}
+

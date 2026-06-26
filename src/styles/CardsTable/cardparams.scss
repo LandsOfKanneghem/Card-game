@@ -1,0 +1,37 @@
+@use '../mixins';
+
+
+//окно, которое появляется при розыгрыше спец карт для выбора параметров карты (например, Джокер или Чемпион)
+.set-new-card {
+    @include mixins.flexObj(flex, center, center, initial);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    background-color: white;
+    padding: 10px;
+    border: 2px black solid;
+    border-radius: 10px;
+    z-index: 10;
+}
+
+.set-new-card--panel {
+    @include mixins.flexObj(flex, center, center, column);
+    margin-right: 5px;
+}
+
+//кнопка для модиикации свойств карты (джокер)
+.modify-value-button {
+    @include mixins.flexObj(flex, center, center, initial);
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 40px;
+    font-weight: bold;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(to right, rgb(252, 214, 26), rgb(255, 255, 169), rgb(252, 214, 26));
+    margin-bottom: 5px;
+    border: 2px black solid;
+    border-radius: 50%;
+}

@@ -1,0 +1,49 @@
+@use '../mixins';
+@use '../vars';
+@use 'playerinfo';
+@use 'handview';
+@use 'cards';
+@use 'actions';
+
+
+$topButtonHeight: 38px;
+
+
+.content, .cards-table, .player-block, .AI-block {
+    @include mixins.flexObj(flex, center, center, initial);
+    position: relative;
+    margin: 0px auto;
+}
+
+.content {
+    flex-direction: column;
+
+    .cards-table { 
+        height: vars.$table-height + 50px;//!!!
+        margin-top: $topButtonHeight + 2px; 
+        padding: vars.$table-padding;
+        background-color: rgb(24, 0, 92);//rgb(24, 0, 92)
+    }
+    .player-block, .AI-block { height: 100%; }
+    .cards-table, .player-block, .AI-block { flex-direction: row; }
+}
+
+//элементы на границе сверху
+.turn-number, .rules-button {
+    @include mixins.flexObj(flex, center, center, initial);
+    position: absolute;
+    top: -$topButtonHeight - 2px;
+    height: $topButtonHeight;
+    padding: 10px;
+    border: 2px vars.$main-color solid;
+    background-color: vars.$main-background;
+    color: vars.$main-color;
+}
+.turn-number { left: 0; width: 125px; }
+.rules-button { right: 0; }
+.rules-button:hover {
+    background-color: rgb(234, 211, 121);
+    color: black; 
+    border-color: black;
+}
+

@@ -1,0 +1,7 @@
+@mixin flexObj($display, $alItems, $justCont, $flexDir) {
+    display: $display;
+    align-items: $alItems;
+    justify-content: $justCont;
+    text-align: center;
+    flex-direction: $flexDir;
+}

@@ -1,0 +1,39 @@
+@use 'vars';
+
+.rules {
+    position: relative;
+    width: 900px;
+    height: calc(100% - 40px);
+    margin: 20px auto;
+    padding: 10px;
+    border: 2px vars.$main-color solid;
+    background-color: vars.$main-background;
+    color: vars.$main-color;
+    font-size: 20px;
+    line-height: 24px;
+    overflow-y: scroll;
+    z-index: 1000;
+}
+.rules p {font-weight: bold;}
+.rules ol {
+    list-style-type: disc;
+    margin-left: 25px;
+}
+
+
+.close-rules-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 32px;
+    height: 32px;
+    color: rgb(158, 0, 0);
+    font-size: 32px;
+    line-height: 32px;
+    font-weight: bold;
+    cursor: pointer;
+
+    &:hover { 
+        color: rgb(116, 0, 0);
+    }
+}
