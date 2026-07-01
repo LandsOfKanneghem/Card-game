@@ -1,10 +1,11 @@
 import { aiChooseAction } from "../AI/aiLogic";
-import type { PlayerOptions, DoneAction, CommonCardParams } from "../types";
+import type { PlayerOptions, DoneAction, CommonCardParams, SpecialCardParams } from "../types";
 import { checkWinner } from "./checkWinner";
 import { finishRound } from "./newRound";
 import useGameStateStore from "../store/gameState.store";
 import useCardsStore from "../store/cards.store";
 import { gameLoop } from "./gameLoop";
+import { specialCardEffects } from "./special cards/specialCardEffects";
 
 
 
@@ -13,7 +14,7 @@ import { gameLoop } from "./gameLoop";
 export const processTurn = (setLogs: React.Dispatch<React.SetStateAction<string[]>>, action?: DoneAction) => {
     const { gameStatus, currentPlayer } = useGameStateStore.getState();
     
-    if (gameStatus !== 'started') return;
+    if (gameStatus !== 'started' || currentPlayer === null) return;
 
     let finalAction = action;
     if (!finalAction && currentPlayer === 'AI') finalAction = aiChooseAction(setLogs);
@@ -28,6 +29,7 @@ export const processTurn = (setLogs: React.Dispatch<React.SetStateAction<string[
     }
 
     //передача хода другому игроку
+    if (!playerCanPassTurn(currentPlayer)) return;
     passTurn(currentPlayer as PlayerOptions, setLogs);
 };
 
@@ -51,36 +53,40 @@ const applyCommonCardEffect = (player: PlayerOptions, card: CommonCardParams) =>
 };
 
 //применение эффекта от розыгрыша особой карты [игроком или ИИ]
-const applySpecialCardEffect = () => {
-
+const applySpecialCardEffect = (player: PlayerOptions, card: SpecialCardParams) => {
+    specialCardEffects[card.value](player);
 };
 
 //выполнить действие
 export const executeAction = (player: PlayerOptions, action: DoneAction) => {
-    const { discardOrPlay } = useCardsStore.getState();
+    const { discardOrPlay, playSpecialCard } = useCardsStore.getState();
     const { card, discarded, canceled } = action; 
 
-    if (discarded === false && card.type === 'common') {
-        applyCommonCardEffect(player, card);
-    } else if (card.type === 'special') {
-        applySpecialCardEffect();
-    }
+    //применить эффект карты
+    if (discarded === false && card.type === 'common') applyCommonCardEffect(player, card);
+    else if (card.type === 'special') applySpecialCardEffect(player, card);
 
-    if (card.type === 'common') {
-        const doneAction: DoneAction = {
-            card: {...card},
-            discarded,
-            canceled: false,
-        };
-        discardOrPlay(doneAction, player);
-    } else {
-        if (player === 'player') {
-            // TODO: Удаление спецкарты из руки
-        } else {
-            // TODO: Удаление спецкарты из руки AI
-        }
-    }
+    //выполнить действие
+    const doneAction: DoneAction = {
+        card: {...card},
+        discarded,
+        canceled: false,
+    };
+    //забрать карту и выдать новую при необходимости (для обычных карт)
+    if (card.type === 'common') discardOrPlay(doneAction, player);
+    else  if (card.type === 'special') playSpecialCard(doneAction, player);
 };
+
+//может ли игрок передать ход
+function playerCanPassTurn(player: PlayerOptions): boolean {
+    if (player === 'player') {
+        const playerActiveEffects = useGameStateStore.getState().playerActiveEffects;
+        console.log(playerActiveEffects)
+        if (playerActiveEffects.includes('coin')) return false;
+        else return true;
+    }
+    else return true;
+}
 
 //передача хода другому игроку
 export const passTurn = (player: PlayerOptions, setLogs: React.Dispatch<React.SetStateAction<string[]>>) => {

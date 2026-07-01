@@ -16,8 +16,6 @@ type HandViewProps = {
 export default function HandView({isPlayer, commonCards, specialCards, getSpecialCardDescription, resetDescription, handleCommonCard, handleSpecialCard}: HandViewProps) {
     const offsetStyle = (isPlayer) ? "player-cards" : "AI-cards"
 
-    //const заполнить пустыми картами?
-
     const commonCardItems = commonCards.map((item, i) => 
         <Card   
             key={i} 

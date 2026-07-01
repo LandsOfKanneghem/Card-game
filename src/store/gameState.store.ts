@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { GameStatus, PlayerOptions, WinnerOptions } from '../types';
+import type { GameStatus, PlayerOptions, WinnerOptions, SpecialCardEffect } from '../types';
 
 type GameStateStore = {
     aiLevel: number | null;
@@ -16,6 +16,9 @@ type GameStateStore = {
     prevAiPoints: number;
     discardCount: number | null;
     maxDiscardCount: number | null;
+    //состояния игроков от розыгранных спец карт
+    playerActiveEffects: SpecialCardEffect[];
+    aiActiveEffects: SpecialCardEffect[];
     
     setAiLevel: (value: number | null) => void;
     setGameWinner: (value: WinnerOptions | null) => void;
@@ -35,6 +38,10 @@ type GameStateStore = {
     incrementPlayerGlobalScore: () => void;
     incrementAiGlobalScore: () => void;
     resetRoundData: () => void;
+
+    addActiveEffect: (player: PlayerOptions, effect: SpecialCardEffect) => void,
+    removeActiveEffect: (player: PlayerOptions, effect: SpecialCardEffect) => void,
+    checkActiveEffects: (player: PlayerOptions, effects: SpecialCardEffect[]) => boolean,
 }
 
 const useGameStateStore = create<GameStateStore>((set, get) => ({
@@ -52,6 +59,8 @@ const useGameStateStore = create<GameStateStore>((set, get) => ({
     prevAiPoints: 0,
     discardCount: null,
     maxDiscardCount: null,
+    playerActiveEffects: [],
+    aiActiveEffects: [],
     
     setAiLevel: (value) => set({ aiLevel: value }),
     setGameWinner: (value) => set({ gameWinner: value }),
@@ -83,7 +92,36 @@ const useGameStateStore = create<GameStateStore>((set, get) => ({
         prevAiPoints: 0,
         discardCount: null,
         maxDiscardCount: null,
+        playerActiveEffects: [],
+        aiActiveEffects: [],
     }),
+
+    addActiveEffect: (player: PlayerOptions, effect: SpecialCardEffect) => {
+        if (player === 'player') {
+            const currentEffects = get().playerActiveEffects;
+            if (!currentEffects.includes(effect)) set({ playerActiveEffects: [...currentEffects, effect] });
+        }
+        else if (player === 'AI') {
+            const currentEffects = get().aiActiveEffects;
+            if (!currentEffects.includes(effect)) set({ aiActiveEffects: [...currentEffects, effect] });
+        }
+        else return;
+    },
+    removeActiveEffect: (player: PlayerOptions, effect: SpecialCardEffect) => {
+        if (player === 'player') set({ playerActiveEffects: get().playerActiveEffects.filter(item => item !== effect) });
+        else if (player === 'AI') set({ aiActiveEffects: get().aiActiveEffects.filter(item => item !== effect) });
+        else return;
+    },
+    checkActiveEffects: (player: PlayerOptions, effects: SpecialCardEffect[]): boolean => {
+        if (player === 'player') {
+            const activeEffects = get().playerActiveEffects;
+            return effects.some(effect => activeEffects.includes(effect));
+        } else if (player === 'AI') {
+            const activeEffects = get().aiActiveEffects;
+            return effects.some(effect => activeEffects.includes(effect));
+        }
+        return false;
+    },
 }));
 
 export default useGameStateStore;

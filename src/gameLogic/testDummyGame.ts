@@ -1,16 +1,15 @@
-import useCardsStore from "../store/cards.store";
 import useGameStateStore from "../store/gameState.store";
-import { startGame } from "./newRound";
 import { aiChooseAction } from "../AI/aiLogic";
 import { dummyAiChooseAction } from "../AI/dummy AI/dummyAi";
 import { executeAction } from "./processTurn";
 import { checkWinner } from "./checkWinner";
 import { finishRound } from "./newRound";
 import type { PlayerOptions } from "../types";
+import { finishDiscardPhase } from "./discardPhase";
 
 //завершить стадию подготовки и начать игру
 export const startDummyGame = (value: 'AGGRO' | 'OUTGROW') => {
-    startGame();
+    finishDiscardPhase();
     setTimeout(() => processDummyTurn(value), 500);
 }
 

@@ -46,11 +46,19 @@ type CardsStore = {
     aiSpecialHand: SpecialCardParams[],//особая рука ИИ 
     aiDoneActions: DoneAction[],//выполненные действия ИИ (действие = сыгранная карта или сброс)
 
+    //действия в начале раунда
     dealCards: () => void,
+
+    //действия с обычными картами
     discardOrPlay: (selectedCard: DoneAction, player: PlayerOptions) => void,
-    removePlayerCommonCard: (id: string) => void,
     takeCardsFromDeck: (count: number) => void,
+    removePlayerCommonCard: (id: string) => void,
     removeAiCommonCard: (id: string) => void,
+
+    //действия со спец картами
+    removePlayerSpecialCard: (id: string) => void,
+    removeAiSpecialCard: (id: string) => void,
+    playSpecialCard: (selectedCard: DoneAction, player: PlayerOptions) => void,
 }
 
 const useCardsStore = create<CardsStore>((set, get) => ({
@@ -69,6 +77,7 @@ const useCardsStore = create<CardsStore>((set, get) => ({
         
         if (!newGeneralDeck?.length) return
         
+        //раздаем игрокам обычные карты
         for (let i = 0; i < COMMON_HAND_SIZE; i++) {
             newPlayerHand.push(newGeneralDeck.pop()!)
             newAiHand.push(newGeneralDeck.pop()!)
@@ -76,12 +85,34 @@ const useCardsStore = create<CardsStore>((set, get) => ({
         newPlayerHand = sortCommonCardsInHand(newPlayerHand);
         newAiHand = sortCommonCardsInHand(newAiHand);
 
-        set({ generalDeck: newGeneralDeck, playerCommonHand: newPlayerHand, playerDoneActions: [], aiCommonHand: newAiHand, aiDoneActions: [] })
+        //раздаем игрокам особые карты
+        const newPlayerSpHand: SpecialCardParams[] = [
+            {id: 'special-player-0', type: 'special', color: 'blue', value: 'coin'},
+            {id: 'special-player-1', type: 'special', color: 'blue', value: 'inversion'},
+            {id: 'special-player-2', type: 'special', color: 'blue', value: 'coin'},
+        ]
+
+        const newAiSpHand: SpecialCardParams[] = [
+            {id: 'special-ai-0', type: 'special', color: 'blue', value: 'coin'},
+            
+        ]
+
+        set({ 
+            generalDeck: newGeneralDeck, 
+            playerCommonHand: newPlayerHand, 
+            playerSpecialHand: newPlayerSpHand,
+            playerDoneActions: [], 
+            aiCommonHand: newAiHand, 
+            aiSpecialHand: newAiSpHand,
+            aiDoneActions: [] 
+        })
     },
 
-    //сбросить карту и взять из колоды [cardWasDiscarded - была ли карта разыграна или просто сброшена]
+    //сбросить ОБЫЧНУЮ карту и взять из колоды [cardWasDiscarded - была ли карта разыграна или просто сброшена]
     //если карта сброшена - она не отображается в разыгранных картах (и ее нельзя отменить)
     discardOrPlay: (doneAction: DoneAction, player: PlayerOptions) => {
+        if (doneAction.card.type !== 'common') return;
+
         const { generalDeck, playerCommonHand, playerDoneActions, aiCommonHand, aiDoneActions } = get()
         //если колода закончилась, карты не добавляем
         const topDeckCard = (generalDeck.length) ? {...generalDeck[generalDeck.length - 1]} : undefined
@@ -101,7 +132,7 @@ const useCardsStore = create<CardsStore>((set, get) => ({
         }
     },
     removePlayerCommonCard: (id) => set({ playerCommonHand: get().playerCommonHand.filter(card => card.id !== id)}),
-    removeAiCommonCard: (id) => set({ aiCommonHand: get().aiCommonHand.filter(card => card.id !== id)}),
+    removeAiCommonCard: (id) => set({ aiCommonHand: get().aiCommonHand.filter(card => card.id !== id)}), 
     takeCardsFromDeck: (count: number) => {
         if (count <= 0) return
         const { generalDeck, playerCommonHand } = get()
@@ -110,6 +141,22 @@ const useCardsStore = create<CardsStore>((set, get) => ({
         const playerNewCommonHand = sortCommonCardsInHand([...playerCommonHand, ...lastGlobalCards]);
         set({ generalDeck: newDeck, playerCommonHand: playerNewCommonHand })
     },
+
+    removePlayerSpecialCard: (id) => set({ playerSpecialHand: get().playerSpecialHand.filter(card => card.id !== id)}),
+    removeAiSpecialCard: (id) => set({ aiSpecialHand: get().aiSpecialHand.filter(card => card.id !== id)}),
+    playSpecialCard: (doneAction: DoneAction, player: PlayerOptions) => {
+        if (doneAction.card.type !== 'special') return;
+
+        if (player === 'AI') {
+            const { aiSpecialHand, aiDoneActions } = get();
+            const handWithoutCard = aiSpecialHand.filter((card: SpecialCardParams) => card.id !== doneAction.card.id)
+            set({ aiSpecialHand: handWithoutCard, aiDoneActions: [...aiDoneActions, doneAction]})
+        } else {
+            const { playerSpecialHand, playerDoneActions } = get();
+            const handWithoutCard = playerSpecialHand.filter((card: SpecialCardParams) => card.id !== doneAction.card.id)
+            set({ playerSpecialHand: handWithoutCard, playerDoneActions: [...playerDoneActions, doneAction]})
+        }
+    }
 }));
 
 export default useCardsStore;

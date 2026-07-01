@@ -33,6 +33,9 @@ export type SpecialCardValue =
     'champion' |
     'plague'
 
+export type SpecialCardEffect = 
+    'coin' | 'clover'
+
 export type SpecialCardInfo = {
     name: string,
     color: SpecialCardColor,

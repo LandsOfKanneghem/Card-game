@@ -1,5 +1,5 @@
 import type { SpecialCardValue, DoneAction } from "../../types"
-import { specialCardsData } from "../../specialCards"
+import { specialCardsData } from "../../gameLogic/special cards/specialCardsData";
 
 
 
@@ -30,9 +30,11 @@ function DoneActionElement({action, handlePointerOver, handlePointerOut}: DoneAc
             <div className={actionStyle}>
                 <div className="action-value">{actionViewValue}</div> 
             </div> :
-            <div className={actionStyle}
-                    onMouseOver={() => handlePointerOver(card.value)}
-                    onMouseOut={() => handlePointerOut()}>
+            <div 
+                className={actionStyle}
+                onMouseOver={() => handlePointerOver(card.value)}
+                onMouseOut={() => handlePointerOut()}
+            >
                 <div className="action-value">{actionViewValue}</div> 
             </div>
         )

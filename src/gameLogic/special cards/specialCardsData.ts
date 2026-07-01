@@ -1,16 +1,16 @@
-import img_coin from './assets/img/special card/coin_spcard.png';
-import img_inversion from './assets/img/special card/inversion_spcard.png';
-import img_joker from './assets/img/special card/joker_spcard.png';
-import img_cancel from './assets/img/special card/cancel_spcard.png';
-import img_swap from './assets/img/special card/swap_spcard.png';
-import img_clover from './assets/img/special card/clover_spcard.png';
-import img_truce from './assets/img/special card/truce_spcard.png';
-import img_sprint from './assets/img/special card/sprint_spcard.png';
-import img_hourglass from './assets/img/special card/hourglass_spcard.png';
-import img_champion from './assets/img/special card/champion_spcard.png';
-import img_plague from './assets/img/special card/plague_spcard.png';
+import img_coin from '../../assets/img/special card/coin_spcard.png';
+import img_inversion from '../../assets/img/special card/inversion_spcard.png';
+import img_joker from '../../assets/img/special card/joker_spcard.png';
+import img_cancel from '../../assets/img/special card/cancel_spcard.png';
+import img_swap from '../../assets/img/special card/swap_spcard.png';
+import img_clover from '../../assets/img/special card/clover_spcard.png';
+import img_truce from '../../assets/img/special card/truce_spcard.png';
+import img_sprint from '../../assets/img/special card/sprint_spcard.png';
+import img_hourglass from '../../assets/img/special card/hourglass_spcard.png';
+import img_champion from '../../assets/img/special card/champion_spcard.png';
+import img_plague from '../../assets/img/special card/plague_spcard.png';
 
-import type { SpecialCardValue, SpecialCardInfo } from "./types";
+import type { SpecialCardValue, SpecialCardInfo } from "../../types";
 
 
 

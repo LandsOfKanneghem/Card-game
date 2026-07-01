@@ -3,7 +3,7 @@ import type { WinnerOptions } from "../types";
 import useCardsStore from "../store/cards.store";
 import useGameStateStore from "../store/gameState.store";
 import { gameLoop } from "./gameLoop";
-import { startDiscardPhase, finishDiscardPhase } from "./discardPhase";
+import { startDiscardPhase } from "./discardPhase";
 
 
 
@@ -23,7 +23,6 @@ export const prepareForNewRound = () => {
 export const startGame = () => {
     const { setCurrentPlayer, setGameStatus } = useGameStateStore.getState();
 
-    finishDiscardPhase();
     setGameStatus('started');
     setCurrentPlayer('player');
 }

@@ -1,5 +1,4 @@
 import React from "react";
-import { specialCardsData } from "./specialCards";
 import Logs from "./components/TESTS/Logs";
 import Tests from "./components/TESTS/Tests";
 import DifficultySelector from "./components/DifficultySelector";
@@ -14,12 +13,14 @@ import useCardsStore from "./store/cards.store";
 import { processTurn } from "./gameLogic/processTurn";
 import { prepareForNewRound, startGame } from "./gameLogic/newRound";
 import { gameLoop } from "./gameLogic/gameLoop";
-import { discardCardInDiscardPhase } from "./gameLogic/discardPhase";
+import { discardCardInDiscardPhase, checkDiscardPhase, finishDiscardPhase } from "./gameLogic/discardPhase";
 import { startDummyGame } from "./gameLogic/testDummyGame";
 
 import './styles/CardGame.scss';
 
-export default function UserInterface() {
+
+
+export default function CardGame() {
     //логи
     const [logs, setLogs] = React.useState<string[]>([]);
     const [dummyAi, setDummyAi] = React.useState<null | 'AGGRO' | 'OUTGROW'>(null);
@@ -32,6 +33,9 @@ export default function UserInterface() {
 
     //НЕ УВЕРЕН, ЧТО ЭТО СЕЙЧАС НАДО
     const [offsetFromTop, setOffsetFromTop] = React.useState("0");
+
+    //при наведении на спец карту появляется ее описание
+    const [specialCardDescription, setSpecialCardDescription] = React.useState<SpecialCardValue | null>(null);
     
     //выбор карт (из колоды, при розыгрыше спец карты) [ЧТО-ТО БУДЕТ ВЫНЕСЕНО В ИГРОВУЮ ЛОГИКУ]
     const [selectedCards, setSelectedCards] = React.useState<CommonCardParams[] | SpecialCardParams[]>([])
@@ -43,6 +47,8 @@ export default function UserInterface() {
         currentPlayer,
         gameStatus,
         turn,
+        playerActiveEffects,
+        aiActiveEffects,
         setAiLevel,
         setGameStatus
     } = useGameStateStore();
@@ -70,30 +76,33 @@ export default function UserInterface() {
         }
     }, [gameStatus]);
 
+    //сброс dummyAI
+    React.useEffect(() => {
+        if (gameStatus === 'round finished') {
+            setDummyAi(null);
+        }
+    }, [gameStatus]);
+
     //ОБРАБОТЧИКИ
 
     //клик по обычной карте
     const handleCommonCard = (e: PtrEvent, selectedCard: CommonCardParams) => {
         e.preventDefault();
         
-        //только ЛКМ или ПКМ
-        if (e.nativeEvent.button !== 0 && e.nativeEvent.button !== 2) return;
-
+        if (e.nativeEvent.button !== 0 && e.nativeEvent.button !== 2) return;//только ЛКМ или ПКМ
         if (gameStatus === 'round finished' || gameStatus === 'game finished') return;
 
-        //режим сброса карт перед началом игры
-        if (gameStatus === 'discard before start') {
+        //режим сброса карт (перед началом игры ИЛИ из-за влияния спец карты)
+        if (checkDiscardPhase('player')) {
             discardCardInDiscardPhase(selectedCard.id);
+            return;
         }
-        
-        //в режиме dummyAi игроком управляет AI, игнорируем клики
-        if (dummyAi !== null) return;
-        
-        //может ли игрок ходить
-        if (!gameLoop.canPlayerAct()) return;
+
+        //розыгрыш карты
+        if (!gameLoop.canPlayerAct()) return;//может ли игрок ходить
+        if (dummyAi !== null) return;//в режиме dummyAi игроком управляет AI, игнорируем клики
 
         const discarded = e.nativeEvent.button === 2;
-
         if (currentPlayer === 'player' && gameStatus === 'started') {
             processTurn(setLogs, {
                 card: selectedCard, 
@@ -106,24 +115,33 @@ export default function UserInterface() {
     //клик по спецкарте
     const handleSpecialCard = (e: PtrEvent, selectedCard: SpecialCardParams) => {
         e.preventDefault();
-        if (!gameLoop.canPlayerAct()) return;
-        if (dummyAi !== null) return;
-        
-        console.log('Special card clicked:', selectedCard);
+
+        if (e.nativeEvent.button !== 0) return;//только ЛКМ (сбрасывать нельзя)
+        if (gameStatus === 'round finished' || gameStatus === 'game finished') return;
+        if (!gameLoop.canPlayerAct()) return;//может ли игрок ходить
+        if (!gameLoop.canPlayerHandleSpecialCard()) return;//может ли игрок взаимодействовать со спец картами во время хода
+        if (dummyAi !== null) return;//в режиме dummyAi игроком управляет AI, игнорируем клики
+
+        if (currentPlayer === 'player' && gameStatus === 'started') {
+            processTurn(setLogs, {
+                card: selectedCard, 
+                discarded: false, 
+                canceled: false
+            });
+        }
+
+        resetDescription();
     };
 
-    //получить описание особой карты
-    // const getSpecialCardDescription = React.useCallback((value: SpecialCardValue) => {
-    //     const specialCardInfo = specialCardsData[value];
-    //     if (specialCardInfo) {
-    //         setDescription([specialCardInfo.name, specialCardInfo.description]);
-    //     }
-    // }, []);
+    //ОПИСАНИЕ СПЕЦ КАРТЫ
 
-    // //сброс описания
-    // const resetDescription = React.useCallback(() => {
-    //     setDescription(null);
-    // }, []);
+    //сброс описания
+    const resetDescription = () => setSpecialCardDescription(null);
+
+    //получить описание особой карты
+    const getSpecialCardDescription = (value: SpecialCardValue) => setSpecialCardDescription(value);
+
+    //ОБРАБОТЧИКИ КНОПОК
 
     //переключение правил
     const toggleRulesDescription = React.useCallback(() => {
@@ -132,7 +150,7 @@ export default function UserInterface() {
 
     //обработчик кнопки "Начать игру"
     const handleStartGameButton = () => {
-        if (gameStatus === 'discard before start') startGame();
+        if (gameStatus === 'discard before start') finishDiscardPhase();
         if (gameStatus === 'round finished') prepareForNewRound();
     };
 
@@ -149,7 +167,7 @@ export default function UserInterface() {
 
 
     //ТЕСТ
-    //console.log(gameStatus)
+    console.log(gameStatus, dummyAi)
 
     return (
         <div className='game-app' onContextMenu={(e) => e.preventDefault()}>
@@ -176,13 +194,6 @@ export default function UserInterface() {
                             />
                         )}
 
-                        {(specialCardState === 'joker_state' || specialCardState === 'champion_state') && (
-                            <SpCardParamsSetter
-                                setSpecialCardParams={setSpecialCardParams}
-                                specialCardState={specialCardState}
-                            />
-                        )}
-
                         {gameStatus !== 'choosing cards from deck' && (
                             <div className={contentWrapperStyle}>
                                 <Content
@@ -193,6 +204,9 @@ export default function UserInterface() {
                                     handleCommonCard={handleCommonCard}
                                     handleSpecialCard={handleSpecialCard}
                                     handleStartGameButton={handleStartGameButton}
+                                    specialCardDescription={specialCardDescription}
+                                    resetDescription={resetDescription}
+                                    getSpecialCardDescription={getSpecialCardDescription}
                                 />
                             </div>
                         )}

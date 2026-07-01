@@ -53,7 +53,6 @@ class GameLoop {
         }, delay);
     }
 
-    
     //проверка, может ли игрок сделать ход
     public canPlayerAct(): boolean {
         const { currentPlayer, gameStatus } = useGameStateStore.getState();
@@ -62,7 +61,15 @@ class GameLoop {
                !this.aiTimeout &&
                !this.isProcessing;
     }
+
+    //проверка, может ли игрок взаимодействовать со спец картами
+    //(здесь происходит проверка на спец эффекты, которые блокируют взаимодействие со спец картами)
+    public canPlayerHandleSpecialCard(): boolean {
+        const checkActiveEffects = useGameStateStore.getState().checkActiveEffects;
+
+        return !checkActiveEffects('player', ['coin', 'clover']);
+    }
 }
 
-// Экспортируем синглтон
+
 export const gameLoop = new GameLoop();

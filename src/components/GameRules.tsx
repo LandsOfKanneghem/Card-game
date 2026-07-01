@@ -11,7 +11,7 @@ export default function GameRules({toggleRulesDescription}: GameRulesProps) {
                 <li>игра идет до двух побед</li>
                 <li>у каждого игрока есть 2 руки: 
                     <ol>
-                        <li><span style={{fontWeight: "bold"}}>обычная</span> - состоит из 6 карт общей колоды, восполняется до 6 карт каждый ход</li>
+                        <li><span style={{fontWeight: "bold"}}>обычная</span> - состоит из 6 карт общей колоды, восполняется до 6 карт каждый ход (размер общей колоды - 64 карты)</li>
                         <li><span style={{fontWeight: "bold"}}>особая</span> - состоит из особых карт собственной колоды, во время раунда не восполняется</li>
                     </ol>
                 </li>

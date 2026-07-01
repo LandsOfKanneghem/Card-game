@@ -1,6 +1,6 @@
 import React from "react"
 import type { PtrEvent, CardColor, SpecialCardValue } from "../../types"
-import { specialCardsData } from "../../specialCards"
+import { specialCardsData } from "../../gameLogic/special cards/specialCardsData"
 import { isSpecialCard } from "../../utils/gameUtils"
 
 import ARROW_UP from '../../assets/img/common card/arrow-up.svg'
@@ -74,8 +74,9 @@ export default function Card({id, color, value, isSmall, isSelected, handleClick
     if (isPositive === true) itemValueStyle += " positive"
     if (isPositive === false) itemValueStyle += " negative"
 
-    //const viewValue = (isSpecialCard(color)) ? <img className={itemImgStyle} src={specialCardsData[value].image} alt=""/> : sign + strValue
-    const viewValue = (isSpecial) ? <img className={itemImgStyle} src={specialCardsData[value].image} alt=""/> : strValue
+    const viewValue = (isSpecial) ? 
+        <img className={itemImgStyle} src={specialCardsData[value as SpecialCardValue].image} alt=""/> : 
+        strValue
 
     return (
         <div className={itemStyle} 

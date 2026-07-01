@@ -1,10 +1,10 @@
 import ReactDOM from 'react-dom/client';
 import './styles/reset.css';
-import App from './App';
+import CardGame from './App';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 //  <React.StrictMode>
-    <App />
+    <CardGame />
 //  </React.StrictMode>
 );
